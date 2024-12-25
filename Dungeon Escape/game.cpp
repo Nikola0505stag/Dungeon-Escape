@@ -56,6 +56,8 @@ void welcome() {
 		goto go;
 	}
 	
+
+	
 }
 
 void printMatrix() {
