@@ -115,7 +115,7 @@ void Registered() { // регистриран
 bool isReg(std::string name) { // проверка дали човека е регистриран
 	std::ifstream ifs("Register.txt");
 	if (!ifs.is_open()) {
-		std::cout << "The file can't be open";
+		std::cout << "The file can't be opened";
 		std::cout << std::endl;
 
 	}
@@ -129,7 +129,7 @@ bool isReg(std::string name) { // проверка дали човека е ре
 }
 
 void myLog() { // Форма за лог ин - ване
-	std::cout << "Innsert first name: "; std::cin >> firstname;
+	std::cout << "Insert first name: "; std::cin >> firstname;
 	std::cout << "Insert second name:"; std::cin >> lastname; std::cout << std::endl;
 	//personName = name;
 

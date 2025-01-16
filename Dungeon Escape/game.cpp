@@ -8,7 +8,7 @@ int lives, coins, level;
 bool key;
 
 int kurx, kury;
-
+int newx, newy;
 
 void welcome() {
 	
@@ -53,6 +53,7 @@ void welcome() {
 		goto yes;
 	}
 	else {
+		std::cout << "Wrong input!";
 		goto go;
 	}
 	
@@ -88,7 +89,6 @@ void start() {
 	player();
 	
 	move();
-
 	printMatrix();
 	goto move;
 }
@@ -110,7 +110,7 @@ void move() {
 	std::cout << "Up(w), down(s),left(a),right(d)";
 
 	char ch; std::cin >> ch;
-	int newx, newy;
+	
 	newx = kurx;
 	newy = kury;
 	
@@ -130,8 +130,7 @@ void move() {
 		std::cout << "Wrong input!Try again!";
 		move();
 	}
-	swap(newx, newy);
-
+	checking();
 
 }
 
@@ -144,4 +143,40 @@ void swap(int x, int y) {
 	matrix[y][x] = matrix[kury][kurx];
 	matrix[kury][kurx] = swapC;
 	kurx = x; kury = y;
+}
+
+void checking() {
+	if (matrix[newy][newx] == 'C') {
+		matrix[newy][newx] = ' ';
+		coins++;
+		swap(newx, newy);
+	}
+	else if (matrix[newy][newx] == '#') {
+		lives--;
+		if (lives == 0) {
+
+		}
+	}
+	else if (matrix[newy][newx] == '&') {
+		key = true;
+		matrix[newy][newx] = ' ';
+		swap(newx, newy);
+	}
+	else if (matrix[newy][newx] == 'X') {
+		if (key == true) {
+			//spechelil
+			matrix[newy][newx] = ' ';
+			swap(newx, newy);
+		}
+		else {
+			std::cout << "You did not find the key, try to find it!";
+			Sleep(1000);
+			std::cout << std::endl;
+			move();
+		}
+	}
+	else if (matrix[newy][newx] = ' ') {
+		swap(newx, newy);
+	}
+	
 }

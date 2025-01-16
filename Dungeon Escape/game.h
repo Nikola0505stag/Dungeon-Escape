@@ -11,5 +11,7 @@ void move();
 void swap(int x, int y);
 void final(int x,int y);
 
+void checking();
+
 extern int lives, coins, level;
 extern bool key;
