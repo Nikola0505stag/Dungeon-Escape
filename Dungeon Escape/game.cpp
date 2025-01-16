@@ -146,6 +146,7 @@ void swap(int x, int y) {
 }
 
 
+
 void checking() {
 	if (matrix[newy][newx] == 'C') {
 		matrix[newy][newx] = ' ';
