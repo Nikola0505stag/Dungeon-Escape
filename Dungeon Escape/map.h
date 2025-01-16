@@ -7,6 +7,7 @@ extern const int COLS;
 
 bool isFileEmpty(const std::string& filename);
 
-void insertMap();
+void insertMap(std::string map);
+void insertnewMap(std::string map);
 
 void insertMatrix();

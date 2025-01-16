@@ -1,8 +1,8 @@
 # # # # # # # # # # # # # # #
 # C C C # C C C # C C C # X #
-# C # C # C # C # C # C # & #
-# C # C # C # C # C # C # C #
-# C # C # C # C # C # C # C #
+# C # C # C # C # C # C # # #
+# C # C # C # C # C # C # # #
+# C # C # C # C # C # C # # #
 # C # C # C # C # C # C # C #
 # C # C # C # C # C # C # C #
 # C # C # C # C # C # C # C #

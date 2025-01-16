@@ -13,5 +13,9 @@ void final(int x,int y);
 
 void checking();
 
+void gameOver();
+
+void win();
+
 extern int lives, coins, level;
 extern bool key;

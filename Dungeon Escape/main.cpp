@@ -5,7 +5,6 @@
 #include "game.h"
 
 int main() {
-    
     welcomeText();
     
     regOrLog();
@@ -17,7 +16,7 @@ int main() {
         
         std::cout << "Logged" << std::endl<<std::endl;
 
-        insertMap();
+        insertMap("11.txt");
         insertMatrix();
         welcome();
     }

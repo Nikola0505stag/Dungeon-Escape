@@ -16,12 +16,12 @@ bool isFileEmpty(const std::string& filename) {
 }
 
 
-void insertMap() {
+void insertMap(std::string map) {
 	std::string name = firstname + lastname;
 	name += ".txt";
 	if (isFileEmpty(name)) {
 		std::ofstream ofs(name);
-		std::ifstream level1("11.txt");
+		std::ifstream level1(map);
 
 		char ch;
 		while (level1.get(ch)) {
@@ -30,6 +30,19 @@ void insertMap() {
 		ofs.close();
 		level1.close();
 	}
+}
+void insertnewMap(std::string map) {
+	std::string name = firstname + lastname;
+	name += ".txt";
+		std::ofstream ofs(name);
+		std::ifstream level1(map);
+
+		char ch;
+		while (level1.get(ch)) {
+			ofs << ch;
+		}
+		ofs.close();
+		level1.close();
 }
 void insertMatrix() {
 	name = firstname + lastname;
