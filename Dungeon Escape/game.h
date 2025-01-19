@@ -16,6 +16,10 @@ void checking();
 void gameOver();
 
 void win();
+void addProgress();
+
+bool nameExistsInFile();
+void givingInitialData();
 
 extern int lives, coins, level;
 extern bool key;

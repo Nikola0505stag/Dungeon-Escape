@@ -3,6 +3,11 @@
 #include "map.h"
 #include <cstdlib>
 #include <windows.h>
+#include "login.h";
+#include <fstream>
+#include <sstream>
+#include <vector>
+
 
 int lives, coins, level;
 bool key;
@@ -83,7 +88,6 @@ void printMatrix() {
 }
 
 void start() {
-	if (!play) goto endGame;
 
 	printMatrix();
 
@@ -94,13 +98,7 @@ void start() {
 	move();
 	printMatrix();
 	endGame:
-	if (play)
 		goto move;
-	else {
-		system("cls");
-		std::cout << "Thank you for playin";
-		std::cout << std::endl << std::endl;
-	}
 }
 
 void player() {
@@ -137,10 +135,37 @@ void move() {
 		newx += 1;
 	}
 	else if (ch == 'e' || ch == 'E') {
-		std::cout << "exit";
-		// exit metod
-		Sleep(2000);
-		//return;
+
+		std::cout << "Want to save how far you've come? Yes(y) or No(n).";
+
+		again:
+
+		char ans; std::cin >> ans;
+		
+		if (ans == 'y') {
+			system("cls");
+
+			addProgress();
+			
+			
+			Sleep(2000);
+			system("cls");
+			std::cout << "Thank you for playing!";
+			Sleep(1000);
+			exit(0); // Изход от програмата
+		
+		}
+		else if (ans == 'n') {
+			system("cls");
+			std::cout << "Thank you for playing!";
+			Sleep(1000);
+			exit(0); // Изход от програмата
+		}
+		else {
+			std::cout << "Wrong input";
+			goto again;
+		}
+
 	}
 	else {
 		std::cout << "Wrong input!Try again!";
@@ -211,8 +236,10 @@ void gameOver() {
 		start();
 	}
 	else if (ch == 'n') {
-		play = false;
-		start();
+		system("cls");
+		std::cout << "Thank you for playing!";
+		Sleep(1000);
+		exit(0); // Изход от програмата	
 	}
 	else {
 		std::cout << "Wrong input!";
@@ -227,7 +254,8 @@ void win() {
 	int option = 1;
 	level++;
 	levelName = std::to_string(level) + std::to_string(option) + ".txt";
-
+	key = false;
+	
 	insertnewMap(levelName);
 
 
@@ -242,10 +270,117 @@ void win() {
 		start();
 	}
 	else if (ch == 'n') {
-		play = false;
-		start();
+		
+		system("cls");
+		std::cout << "Thank you for playing!";
+		Sleep(1000);
+		exit(0); // Изход от програмата
+
 	}
 	else {
 		goto again;
 	}
+}
+
+void addProgress() {
+	//std::cout << firstname << lastname;
+	std::string fullname = firstname + lastname;
+	std::string strLives, strCoins, strLevel, strKey;
+	strLives = std::to_string(lives);
+	strCoins = std::to_string(coins);
+	strLevel = std::to_string(level);
+	if (key) {
+		strKey = "true";
+	}
+	else strKey = "false";
+
+
+	if (nameExistsInFile()) {
+		std::ifstream file("Progress.txt");
+		if (!file) {
+			std::cout << "Error!";
+		}
+		else {
+			std::vector<std::string> lines;
+			std::string line;
+
+			//Прочитаме всички редове и провевяраме дали реда съдържа търсеното име
+
+			while (std::getline(file, line)) {
+				std::stringstream ss(line);
+				std::string name;
+
+				ss >> name;
+
+				if (name == fullname) {
+					line = fullname + " " + strLevel + " " + strLives + " " + strCoins + " " + strKey;
+				}
+				lines.push_back(line);
+			}
+			file.close();
+
+			std::ofstream outFile("Progress.txt", std::ofstream::trunc);  // Отваряме с "trunc", за да изтрием старото съдържание
+			if (!outFile) {
+				std::cerr << "Не може да се отвори файлът за запис!" << std::endl;
+			}
+			else {
+
+				for (const auto& updatedLine : lines) {
+					outFile << updatedLine << std::endl;
+				}
+			}
+			outFile.close();
+			
+		}
+	}
+	else {
+
+
+		
+
+		std::ofstream progress("Progress.txt", std::ios::app); // за записване в края на файла без триене на предишното съдържание
+
+		if (!progress.is_open()) {
+			std::cout << "Error";
+			return;
+		}
+
+
+
+
+		//std::cout << lives << coins << level;
+
+		progress << "\n" << fullname << " " << strLevel << " " << strLives << " " << strCoins << " " << strKey; // добавя в листа новото име
+
+
+		progress.close();
+	}
+}
+
+bool nameExistsInFile() {
+	std::ifstream file("Progress.txt");
+
+	if (!file) {
+		std::cout << "Не може да се отвори файлът!" << std::endl;
+		return false;
+	}
+	std::string fullname = firstname + lastname;
+	std::string line;
+	while (std::getline(file, line)) {
+		std::stringstream name(line);
+		std::string currentName;
+		name >> currentName;  // Чете първото име от реда
+
+
+
+		if (currentName == fullname) {
+			return true;  // Намерено е съвпадение на името
+		}
+	}
+
+	return false;  // Няма съвпадение
+}
+
+void givingInitialData() {
+	std::ifstream;
 }
