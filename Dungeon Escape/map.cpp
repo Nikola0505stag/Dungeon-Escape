@@ -58,4 +58,22 @@ void insertMatrix() {
 	ifs.close();
 }
 
+void saveCurrentMap() {
 
+	std::string filename = firstname + lastname + ".txt";
+
+	std::ofstream file(filename);
+
+	if (!file) {
+		std::cout << "Не може да се отвори файла за запис!" << std::endl;
+	}
+	else {
+		for (int i = 0; i < ROWS; ++i) {
+			for (int j = 0; j < COLS; ++j) { 
+				file << matrix[i][j] << " ";  // Записваме всеки елемент с интервал
+			}
+			file << std::endl;  // Записваме нов ред след всеки ред на матрицата
+		}
+	}
+	file.close();
+}

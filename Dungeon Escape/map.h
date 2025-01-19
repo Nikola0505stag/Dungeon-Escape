@@ -11,3 +11,4 @@ void insertMap(std::string map);
 void insertnewMap(std::string map);
 
 void insertMatrix();
+void saveCurrentMap();

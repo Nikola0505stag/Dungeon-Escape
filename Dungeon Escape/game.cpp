@@ -18,13 +18,20 @@ bool play = true;
 int kurx, kury;
 int newx, newy;
 
+
+
 void welcome() {
 	
-	lives = 3, coins = 0, level = 1;
-	key = false;
+	std::string fullname = firstname + lastname;
+
 	
+	
+	givingInitialData();
+
 	std::cout << "Hello, this is the map you will be playing on.";
 	std::cout << std::endl << std::endl;
+
+
 
 	printMatrix(); i++;
 
@@ -70,8 +77,9 @@ void welcome() {
 }
 
 void printMatrix() {
-	system("cls");
+	
 	if (i != 0) {
+		system("cls");
 		std::cout << "Level: " << level;
 		std::cout << std::endl << "Lives: " << lives;
 		std::cout << std::endl << "Coins: " << coins;
@@ -146,7 +154,7 @@ void move() {
 			system("cls");
 
 			addProgress();
-			
+			saveCurrentMap();
 			
 			Sleep(2000);
 			system("cls");
@@ -233,6 +241,8 @@ void gameOver() {
 	if (ch == 'y') {
 		insertMatrix();
 		lives = 3;
+		coins = 0;
+		key = false;
 		start();
 	}
 	else if (ch == 'n') {
@@ -257,7 +267,7 @@ void win() {
 	key = false;
 	
 	insertnewMap(levelName);
-
+	addProgress();
 
 	std::cout << "Well done, you passed the level! Do you want to move on?";
 	std::cout << "Yes(y) or No(n)";
@@ -382,8 +392,43 @@ bool nameExistsInFile() {
 }
 
 void givingInitialData() {
-	std::ifstream;
+	std::string fullname = firstname + lastname;
+	std::string targetName = fullname;  // Търсеното име
+	//std::cout << targetName;
+	std::ifstream file("Progress.txt");   // Отваряме файла
 
+	if (!file) {
+		std::cout << "Не може да се отвори файлът!" << std::endl;
+	}
 
+	std::string line;
+	bool found = false;
+
+	while (std::getline(file, line)) {
+		std::stringstream ss(line);
+		std::string name;
+		std::string strLives, strCoins, strLevel,strKey;
+
+		// Четем името на човека
+		ss >> name;
+
+		// Проверяваме дали името съвпада с търсеното
+		if (name == targetName) {
+			// Ако името съвпада, взимаме останалите данни
+			ss >> strLevel >> strLives >> strCoins >> strKey;
+
+			lives = stoi(strLives);
+			coins = stoi(strCoins);
+			level = stoi(strLevel);
+			if (strKey == "true") key = 1;
+			else key = 0;
+			
+			found = true;
+			break;
+		}
+	}
+
+	if (!found) {
+		lives = 3, coins = 0, level = 1, key = false;
+	}
 }
-

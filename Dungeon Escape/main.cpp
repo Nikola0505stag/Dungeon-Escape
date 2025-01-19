@@ -10,7 +10,7 @@ int main() {
     regOrLog();
     system("cls");
 
-    std::cout << logged;
+   // std::cout << logged;
      
     if (logged) {
         
