@@ -383,4 +383,7 @@ bool nameExistsInFile() {
 
 void givingInitialData() {
 	std::ifstream;
+
+
 }
+
