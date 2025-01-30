@@ -7,12 +7,14 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 
-int lives, coins, level;
+int lives, coins, level, option;
 bool key;
 int i = 0;
-bool play = true;
 
 
 int kurx, kury;
@@ -194,7 +196,17 @@ void swap(int x, int y) {
 	kurx = x; kury = y;
 }
 
-
+void findPortal() {
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLS; j++) {
+			if (matrix[i][j] == '%' && ((abs(kury - i) >= 1 && abs(kurx - j) >= 1) || abs(kury - i) > 1 || abs(kurx - j) > 1)) {
+				char swap = matrix[kury][kurx];
+				matrix[i][j] = matrix[kury][kurx];
+				matrix[kury][kurx] = ' ';
+			}
+		}
+	}
+}
 
 void checking() {
 	if (matrix[newy][newx] == 'C') {
@@ -212,6 +224,11 @@ void checking() {
 		key = true;
 		matrix[newy][newx] = ' ';
 		swap(newx, newy);
+	}
+	else if (matrix[newy][newx] == '%') {
+		matrix[newy][newx] = ' ';
+		swap(newx, newy);
+		findPortal();
 	}
 	else if (matrix[newy][newx] == 'X') {
 		if (key == true) {
@@ -239,11 +256,50 @@ void gameOver() {
 	again:
 	std::cin >> ch;
 	if (ch == 'y') {
-		insertMatrix();
-		lives = 3;
-		coins = 0;
-		key = false;
-		start();
+
+		std::cout << "You would like to start from the last saved level or from a new level?";
+		againn:
+		
+		std::cout << std::endl << "Last saved level(l),new level(n)";
+		char answer;
+		std::cin >> answer;
+		if (answer == 'l') {
+			insertMatrix();
+			lives = 3;
+			coins = 0;
+			key = false;
+			start();
+
+		}
+		else if (answer == 'n') {
+		go:
+			lives = 3;
+			coins = 0;
+			std::cout << "What level would you like to start at?";
+			int levelToStart;
+			std::cin >> levelToStart;
+			level = levelToStart;
+			if (levelToStart <= level) {
+				
+				std::string levelName;
+				
+				levelName = std::to_string(levelToStart) + std::to_string(option) + ".txt";
+				
+				key = false;
+
+				insertnewMap(levelName);
+				insertMatrix();
+				start();
+				
+
+			}
+			else {
+				std::cout << "You cannot start from a level you have not passed try again!";
+				goto go;
+			}
+			
+		}
+		else goto againn;
 	}
 	else if (ch == 'n') {
 		system("cls");
@@ -259,36 +315,54 @@ void gameOver() {
 }
 
 void win() {
-
-	std::string levelName;
-	int option = 1;
-	level++;
-	levelName = std::to_string(level) + std::to_string(option) + ".txt";
-	key = false;
-	
-	insertnewMap(levelName);
-	addProgress();
-
-	std::cout << "Well done, you passed the level! Do you want to move on?";
-	std::cout << "Yes(y) or No(n)";
-	char ch;
-	again:
-	std::cin >> ch;
-	if (ch == 'y') {
-		play = true;
-		insertMatrix();
-		start();
-	}
-	else if (ch == 'n') {
-		
+	std::srand(std::time(nullptr));
+	if (level == 5) {
 		system("cls");
-		std::cout << "Thank you for playing!";
-		Sleep(1000);
-		exit(0); // Изход от програмата
 
+		std::cout << "Good job, you passed all the levels!";
+
+		std::cout << std::endl;
+
+		std::cout << "Thank you for playing";
+
+		Sleep(2000);
+
+		exit(0); // Изход от програмата	
 	}
 	else {
-		goto again;
+
+		std::string levelName;
+
+		option = std::rand() % 3 + 1;
+		std::cout << option;
+
+		level++;
+		levelName = std::to_string(level) + std::to_string(option) + ".txt";
+		key = false;
+
+		insertnewMap(levelName);
+		addProgress();
+
+		std::cout << "Well done, you passed the level! Do you want to move on?";
+		std::cout << "Yes(y) or No(n)";
+		char ch;
+	again:
+		std::cin >> ch;
+		if (ch == 'y') {
+			insertMatrix();
+			start();
+		}
+		else if (ch == 'n') {
+
+			system("cls");
+			std::cout << "Thank you for playing!";
+			Sleep(1000);
+			exit(0); // Изход от програмата
+
+		}
+		else {
+			goto again;
+		}
 	}
 }
 
@@ -344,25 +418,15 @@ void addProgress() {
 		}
 	}
 	else {
-
-
-		
-
 		std::ofstream progress("Progress.txt", std::ios::app); // за записване в края на файла без триене на предишното съдържание
-
 		if (!progress.is_open()) {
 			std::cout << "Error";
 			return;
 		}
 
-
-
-
 		//std::cout << lives << coins << level;
 
 		progress << "\n" << fullname << " " << strLevel << " " << strLives << " " << strCoins << " " << strKey; // добавя в листа новото име
-
-
 		progress.close();
 	}
 }

@@ -21,5 +21,7 @@ void addProgress();
 bool nameExistsInFile();
 void givingInitialData();
 
-extern int lives, coins, level;
+void findPortal();
+
+extern int lives, coins, level, option;
 extern bool key;

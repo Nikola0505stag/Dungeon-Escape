@@ -7,6 +7,7 @@
 const int ROWS = 10;
 const int COLS = 15;
 
+
 char matrix[ROWS][COLS];
 
 
@@ -49,10 +50,14 @@ void insertMatrix() {
 	name += ".txt";
 
 	std::ifstream ifs(name);
-
+	char symbol;
 	for (int i = 0; i < ROWS; ++i) {
 		for (int j = 0; j < COLS; ++j) {
-			ifs >> matrix[i][j];  // Четем стойностите в матрицата
+			ifs >> symbol;
+			if (symbol == 'T') matrix[i][j] = ' ';
+			else {
+				matrix[i][j] = symbol;  // Четем стойностите в матрицата
+			}
 		}
 	}
 	ifs.close();
@@ -70,7 +75,12 @@ void saveCurrentMap() {
 	else {
 		for (int i = 0; i < ROWS; ++i) {
 			for (int j = 0; j < COLS; ++j) { 
-				file << matrix[i][j] << " ";  // Записваме всеки елемент с интервал
+				if (matrix[i][j] == ' ') {
+					file << 'T' << " ";
+				}
+				else {
+					file << matrix[i][j] << " ";  // Записваме всеки елемент с интервал
+				}
 			}
 			file << std::endl;  // Записваме нов ред след всеки ред на матрицата
 		}
