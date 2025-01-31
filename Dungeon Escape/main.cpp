@@ -11,6 +11,7 @@ int main() {
     std::srand(std::time(nullptr));
     welcomeText();
     
+
     regOrLog();
     system("cls");
 

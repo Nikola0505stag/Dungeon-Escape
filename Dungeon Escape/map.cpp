@@ -3,6 +3,7 @@
 #include "login.h"
 #include <fstream>
 #include<string>
+#include<windows.h>
 
 const int ROWS = 10;
 const int COLS = 15;
@@ -45,6 +46,24 @@ void insertnewMap(std::string map) {
 		ofs.close();
 		level1.close();
 }
+
+
+void setColor(int color) {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, color);
+}
+
+void colorPlayer() {
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				if (matrix[i][j] == '@') {
+					setColor(12);
+				}
+				else setColor(7);
+			}
+		}
+}
+
 void insertMatrix() {
 	name = firstname + lastname;
 	name += ".txt";
@@ -61,6 +80,7 @@ void insertMatrix() {
 		}
 	}
 	ifs.close();
+	//colorPlayer();
 }
 
 void saveCurrentMap() {

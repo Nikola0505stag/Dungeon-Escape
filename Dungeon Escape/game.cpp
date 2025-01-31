@@ -118,6 +118,7 @@ void player() {
 				kurx = j;
 				kury = i;
 			}
+		//	else setColor(11);
 		}
 	}
 	std::cout << kurx << kury;
@@ -146,6 +147,8 @@ void move() {
 	}
 	else if (ch == 'e' || ch == 'E') {
 
+		Sleep(1000);
+
 		std::cout << "Want to save how far you've come? Yes(y) or No(n).";
 
 		again:
@@ -162,6 +165,8 @@ void move() {
 			system("cls");
 			std::cout << "Thank you for playing!";
 			Sleep(1000);
+			leaderBoard();
+			system("pause");
 			exit(0); // Изход от програмата
 		
 		}
@@ -169,6 +174,8 @@ void move() {
 			system("cls");
 			std::cout << "Thank you for playing!";
 			Sleep(1000);
+			leaderBoard();
+			system("pause");
 			exit(0); // Изход от програмата
 		}
 		else {
@@ -176,13 +183,16 @@ void move() {
 			goto again;
 		}
 
+
+
+
 	}
 	else {
 		std::cout << "Wrong input!Try again!";
 		move();
 	}
 	checking();
-
+	
 }
 
 void swap(int x, int y) {
@@ -305,12 +315,17 @@ void gameOver() {
 		system("cls");
 		std::cout << "Thank you for playing!";
 		Sleep(1000);
+		
+		leaderBoard();
+		system("pause");
+		
 		exit(0); // Изход от програмата	
 	}
 	else {
 		std::cout << "Wrong input!";
 		goto again;
 	}
+
 
 }
 
@@ -334,8 +349,9 @@ void win() {
 		std::string levelName;
 
 		option = std::rand() % 3 + 1;
+			
 		std::cout << option;
-
+	//		Sleep(2000);
 		level++;
 		levelName = std::to_string(level) + std::to_string(option) + ".txt";
 		key = false;
@@ -495,4 +511,64 @@ void givingInitialData() {
 	if (!found) {
 		lives = 3, coins = 0, level = 1, key = false;
 	}
+}
+
+
+
+void leaderBoard() {
+	struct Player {
+		std::string nameP;
+		int levelP;
+		int livesP;
+		int coinsP;
+		std::string keyP;
+	};
+
+	std::vector<Player> players;
+
+	std::ifstream ifs("Progress.txt");
+
+	if (!ifs) {
+		std::cout << "Error!";
+		return;
+	}
+	Player p;
+	while (ifs >> p.nameP >> p.levelP >> p.livesP >> p.coinsP >> p.keyP) {
+		players.push_back(p);
+	}
+	
+	int n = players.size();
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = 0; j < n - i - 1; j++) {
+			if (players[j].levelP < players[j + 1].levelP  
+				|| (players[j].levelP == players[j + 1].levelP && players[j].coinsP < players[j + 1].coinsP) ||
+				(players[j].levelP == players[j + 1].levelP && players[j].livesP < players[j + 1].livesP && players[j].coinsP == players[j + 1].coinsP)
+				
+				) {
+				Player temp = players[j];
+				players[j] = players[j + 1];
+				players[j + 1] = temp;
+			}
+		}
+	}
+	
+
+
+	system("cls");
+
+	std::cout << "LEADER BOARD";
+	std::cout << std::endl << std::endl;
+
+	for (const auto& player : players) {
+		std::cout << "Name: " << player.nameP
+			<< ", Level: " << player.levelP
+			<< ", HP: " << player.livesP
+			<< ", Coins: " << player.coinsP
+			<< ", Key: " << player.keyP << std::endl;
+	}
+
+	ifs.close();
+
+
+
 }
