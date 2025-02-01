@@ -10,5 +10,5 @@ void myLog();
 
 void Registered();
 
-extern bool logged;
+extern bool logged, reg;
 extern std::string name, firstname, lastname;

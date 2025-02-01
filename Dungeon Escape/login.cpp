@@ -5,6 +5,7 @@
 
 
 bool logged = false;
+bool reg = false;
 std::string firstname, password, lastname , name; 
 
 
@@ -82,7 +83,7 @@ void myRegister() { // регистрация
 			
 		}
 		list.close();
-
+		reg = true;
 		Registered();
 
 	}
@@ -97,7 +98,6 @@ void Registered() { // регистриран
 		std::cout << std::endl;
 		std::cout << "Welcome!";
 		
-		logged = true;
 		std::cout << std::endl;
 		return;
 		//myLog();

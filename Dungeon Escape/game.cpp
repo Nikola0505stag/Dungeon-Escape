@@ -16,19 +16,27 @@ int lives, coins, level, option;
 bool key;
 int i = 0;
 
+const int MAX_LEVEL = 7;
 
-int kurx, kury;
+
+int curx, cury;
 int newx, newy;
 
-
+bool wasPortal = false;
 
 void welcome() {
 	
 	std::string fullname = firstname + lastname;
 
-	
-	
 	givingInitialData();
+	
+	if (reg) {
+		insertMatrix();
+	}
+	else if (logged) {
+		chooseStartingMap();
+	}
+
 
 	std::cout << "Hello, this is the map you will be playing on.";
 	std::cout << std::endl << std::endl;
@@ -99,6 +107,7 @@ void printMatrix() {
 
 void start() {
 
+
 	printMatrix();
 
 	move:
@@ -110,18 +119,61 @@ void start() {
 	endGame:
 		goto move;
 }
+void chooseStartingMap() {
+	std::cout << "You would like to start from the last saved level or from a new level?";
+againn:
 
+	std::cout << std::endl << "Last saved level(l),new level(n)";
+	char answer;
+	std::cin >> answer;
+	if (answer == 'l') {
+		insertMatrix();
+		lives = 3;
+		coins = 0;
+		key = false;
+
+	}
+	else if (answer == 'n') {
+	go:
+		lives = 3;
+		coins = 0;
+		std::cout << "What level would you like to start at?";
+		int levelToStart;
+		std::cin >> levelToStart;
+		if (levelToStart <= level) {
+
+			std::string levelName;
+
+			option = std::rand() % 3 + 1;
+		
+			levelName = std::to_string(levelToStart) + std::to_string(option) + ".txt";
+
+			key = false;
+
+			insertnewMap(levelName);
+			insertMatrix();
+			level = levelToStart;
+
+		}
+		else {
+			std::cout << "You cannot start from a level you have not passed try again!";
+			goto go;
+		}
+
+	}
+	else goto againn;
+}
 void player() {
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLS; j++) {
 			if (matrix[i][j] == '@') {
-				kurx = j;
-				kury = i;
+				curx = j;
+				cury = i;
 			}
 		//	else setColor(11);
 		}
 	}
-	std::cout << kurx << kury;
+	std::cout << curx << cury;
 }
 
 void move() {
@@ -130,8 +182,8 @@ void move() {
 
 	char ch; std::cin >> ch;
 
-	newx = kurx;
-	newy = kury;
+	newx = curx;
+	newy = cury;
 
 	if (ch == 'w' || ch == 'W') {
 		newy -= 1;
@@ -199,20 +251,43 @@ void swap(int x, int y) {
 	char swapC;
 	std::cout << x << y;
 	std::cout << matrix[y][x];
-	std::cout << matrix[kury][kurx]; std::cout << std::endl;
+	std::cout << matrix[cury][curx]; std::cout << std::endl;
 	swapC = matrix[y][x];
-	matrix[y][x] = matrix[kury][kurx];
-	matrix[kury][kurx] = swapC;
-	kurx = x; kury = y;
+	matrix[y][x] = matrix[cury][curx];
+	matrix[cury][curx] = swapC;
+	curx = x; cury = y;
 }
 
 void findPortal() {
-	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLS; j++) {
-			if (matrix[i][j] == '%' && ((abs(kury - i) >= 1 && abs(kurx - j) >= 1) || abs(kury - i) > 1 || abs(kurx - j) > 1)) {
-				char swap = matrix[kury][kurx];
-				matrix[i][j] = matrix[kury][kurx];
-				matrix[kury][kurx] = ' ';
+	bool found = false;
+	int q = 0;
+	//Sleep(2000);
+
+	for (int i = cury; i < ROWS; i++) {
+		for (int j = curx ; j < COLS; j++) {
+			if (matrix[i][j] == '%') {
+				//std::cout << i << " " << j;
+				found = true;
+				char swap = matrix[cury][curx];
+				matrix[i][j] = matrix[cury][curx];
+				matrix[cury][curx] = '%';
+				wasPortal = true;
+				break;
+			}
+		}
+		q++;
+	}
+	if (!found) {
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				if (matrix[i][j] == '%') {
+					//found = true;
+					char swap = matrix[cury][curx];
+					matrix[i][j] = matrix[cury][curx];
+					matrix[cury][curx] = '%';
+					wasPortal = true;
+					break;
+				}
 			}
 		}
 	}
@@ -220,7 +295,11 @@ void findPortal() {
 
 void checking() {
 	if (matrix[newy][newx] == 'C') {
-		matrix[newy][newx] = ' ';
+		if (wasPortal) {
+			matrix[newy][newx] = '%';
+			wasPortal = false;
+		}
+		else matrix[newy][newx] = ' ';
 		coins++;
 		swap(newx, newy);
 	}
@@ -232,13 +311,24 @@ void checking() {
 	}
 	else if (matrix[newy][newx] == '&') {
 		key = true;
-		matrix[newy][newx] = ' ';
+		if (wasPortal) {
+			matrix[newy][newx] = '%';
+			wasPortal = false;
+		}
+		else matrix[newy][newx] = ' ';
 		swap(newx, newy);
 	}
 	else if (matrix[newy][newx] == '%') {
-		matrix[newy][newx] = ' ';
+		
+		if (wasPortal) {
+			matrix[newy][newx] = '%';
+			wasPortal = false;
+		}
+		else matrix[newy][newx] = ' ';
+
 		swap(newx, newy);
 		findPortal();
+		
 	}
 	else if (matrix[newy][newx] == 'X') {
 		if (key == true) {
@@ -255,6 +345,11 @@ void checking() {
 		}
 	}
 	else if (matrix[newy][newx] = ' ') {
+		if (wasPortal) {
+			matrix[newy][newx] = '%';
+			wasPortal = false;
+		}
+		else matrix[newy][newx] = ' ';
 		swap(newx, newy);
 	}
 }
@@ -266,50 +361,13 @@ void gameOver() {
 	again:
 	std::cin >> ch;
 	if (ch == 'y') {
+		lives = 3;
+		coins = 0;
+		key = false;
 
-		std::cout << "You would like to start from the last saved level or from a new level?";
-		againn:
-		
-		std::cout << std::endl << "Last saved level(l),new level(n)";
-		char answer;
-		std::cin >> answer;
-		if (answer == 'l') {
-			insertMatrix();
-			lives = 3;
-			coins = 0;
-			key = false;
-			start();
+		insertMatrix();
 
-		}
-		else if (answer == 'n') {
-		go:
-			lives = 3;
-			coins = 0;
-			std::cout << "What level would you like to start at?";
-			int levelToStart;
-			std::cin >> levelToStart;
-			level = levelToStart;
-			if (levelToStart <= level) {
-				
-				std::string levelName;
-				
-				levelName = std::to_string(levelToStart) + std::to_string(option) + ".txt";
-				
-				key = false;
-
-				insertnewMap(levelName);
-				insertMatrix();
-				start();
-				
-
-			}
-			else {
-				std::cout << "You cannot start from a level you have not passed try again!";
-				goto go;
-			}
-			
-		}
-		else goto againn;
+		start();
 	}
 	else if (ch == 'n') {
 		system("cls");
@@ -331,7 +389,7 @@ void gameOver() {
 
 void win() {
 	std::srand(std::time(nullptr));
-	if (level == 5) {
+	if (level == MAX_LEVEL) {
 		system("cls");
 
 		std::cout << "Good job, you passed all the levels!";
@@ -341,6 +399,9 @@ void win() {
 		std::cout << "Thank you for playing";
 
 		Sleep(2000);
+
+		leaderBoard();
+		system("pause");
 
 		exit(0); // Изход от програмата	
 	}
@@ -373,6 +434,9 @@ void win() {
 			system("cls");
 			std::cout << "Thank you for playing!";
 			Sleep(1000);
+
+			leaderBoard();
+			system("pause");
 			exit(0); // Изход от програмата
 
 		}
@@ -569,6 +633,6 @@ void leaderBoard() {
 
 	ifs.close();
 
-
+	std::cout << std::endl;
 
 }

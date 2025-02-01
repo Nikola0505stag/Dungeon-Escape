@@ -25,5 +25,7 @@ void findPortal();
 
 void leaderBoard();
 
+void chooseStartingMap();
+
 extern int lives, coins, level, option;
 extern bool key;

@@ -17,8 +17,9 @@ int main() {
 
    // std::cout << logged;
      
-    if (logged) {
+    if (logged || reg) {
         
+
         std::cout << "Logged" << std::endl<<std::endl;
         std::string LevelName;
 
@@ -26,7 +27,6 @@ int main() {
        // std::cout << option;
         LevelName = "1" + to_string(option) + ".txt";
         insertMap(LevelName);
-        insertMatrix();
         welcome();
     }
     else std::cout << "Error";
